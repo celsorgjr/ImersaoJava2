@@ -1,4 +1,6 @@
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -31,19 +33,15 @@ public class App {
 
         // Exibir os dados
         for (Map<String,String> filme : listaFilmes) {
-            
-            System.out.println("Titulo: " + filme.get("title"));
-            System.out.println("Poster: " + filme.get("image"));
-            System.out.println(GREEN_BACKGROUND + "Classificação: "
-                                 + filme.get("imDbRating") + RESET_BACKGROUD);
-            float avalicao = Float.parseFloat(filme.get("imDbRating"));
-            int numeroDeEstrela = Math.round(avalicao);
 
-            for (int i = 0; i < numeroDeEstrela; i++) {
-                System.out.print(EstrelaAmarela);
-            }
-            System.out.println(" ");
-            System.out.println(" ");
+            InputStream inputStream = new URL(filme.get("image")).openStream();
+            String nomeArquivo = "/home/cjunior/Documents/alura/ImersaoJava2/stickers/saida/" + filme.get("title") + ".png";
+            new GeradoraDeFigurinhas().cria(inputStream, nomeArquivo);
+
+            // Print line
+            System.out.println("Titulo: " + filme.get("title"));
+            System.out.println();
+
         }
     }
 }
