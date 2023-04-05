@@ -1,10 +1,5 @@
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.Map;
 
@@ -16,32 +11,30 @@ public class App {
     public static final String BLACK_BACKGROUD  = "\u001B[40m";
     public static final String RESET_BACKGROUD  = "\u001B[0m";
     public static final String EstrelaAmarela = "⭐️";
+    public static final String PATHROOT = "/home/cjunior/Documents/alura/ImersaoJava2/stickers/saida/";
 
     public static void main(String[] args) throws InterruptedException, Exception {
         //Fazer uma conexão HTTP e buscar os filmes
-        String url[] = {"https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json", 
-                        "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/MostPopularMovies.json"};
-        HttpResponse<String> response = HttpClient.newHttpClient()
-            .send(
-                    HttpRequest.newBuilder(URI.create(url[0])).GET().build(), 
-                    BodyHandlers.ofString()
-                );
-        String jsonData = response.body();
+        String url[] = {"https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json"
+                       ,"https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/MostPopularMovies.json"
+                       ,"https://api.nasa.gov/planetary/apod?api_key=b0a3XqfldluU4hVsV530UNhTB3IKCQBaBLHEzpzG&start_date=2022-06-12&end_date=2022-06-15"
+                       };
+        String jsonData = new ClienteHttp().BusgaDados(url[2]);
 
         //Extrair somente os dados que interessa(titulo poster, classificação)
-        List<Map<String,String>> listaFilmes = JsonParser.parse(jsonData);
+        IExtratorDeConteudo extrator = new ExtratorDeConteudoDaNasa();
+        List<Conteudo> conteudos = extrator.extrairConteudo(jsonData);
 
         // Exibir os dados
-        for (Map<String,String> filme : listaFilmes) {
+        for (Conteudo conteudo : conteudos) {
 
-            InputStream inputStream = new URL(filme.get("image")).openStream();
-            String nomeArquivo = "/home/cjunior/Documents/alura/ImersaoJava2/stickers/saida/" + filme.get("title") + ".png";
+            var inputStream = new URL(conteudo.getUrlImagem()).openStream();
+            String nomeArquivo = PATHROOT + conteudo.getTitulo() + ".png";
             new GeradoraDeFigurinhas().cria(inputStream, nomeArquivo);
 
             // Print line
-            System.out.println("Titulo: " + filme.get("title"));
+            System.out.println("Titulo: " + conteudo.getTitulo());
             System.out.println();
-
         }
     }
 }

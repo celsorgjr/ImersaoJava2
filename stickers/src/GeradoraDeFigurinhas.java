@@ -13,8 +13,6 @@ public class GeradoraDeFigurinhas {
     public void cria(InputStream inputStream, String nomeArquivo) throws Exception {
 
         // Leitura da imagem
-        //InputStream inputStream = new FileInputStream(new File("/home/cjunior/Documents/alura/ImersaoJava2/stickers/entrada/TopMovies_1.jpg"));
-        //InputStream inputStream = new URL("https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies_1.jpg").openStream();
         BufferedImage ImagemOriginal = ImageIO.read(inputStream);
 
         // criar nova imagem em memoria com transparencia e com tamanho novo
